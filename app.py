@@ -21,7 +21,7 @@ st.set_page_config(page_title="Q&A Demo")
 st.header("Gemini LLM Application")
 
 input_text = st.text_area("Enter your question here:")
-submit = st.button("Ask the question")
+submit = st.button("Ask the question here")
 
 ## when submit is clicked
 
