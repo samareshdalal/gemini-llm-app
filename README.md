@@ -1,15 +1,18 @@
-# Gemini LLM App
+# Gemini Vision LLM App
 
-A simple **Generative AI web application** built with **Python, Streamlit, and Google's Gemini API**.
+A simple **Generative AI image question-answering application** built with **Python, Streamlit, and Google's Gemini API**.
 
-This project takes user input from a Streamlit interface and sends it to Google's Gemini model to generate an AI response.
+The application allows users to upload an image and ask questions about it. The image and question are processed by **Gemini 3.5 Flash-Lite**, which generates a response based on the provided input.
 
 ---
 
 ## Features
 
 * Simple Streamlit web interface
-* User input through a text box
+* Image upload support
+* Supports JPG, JPEG, and PNG images
+* Ask questions about uploaded images
+* Multimodal AI capabilities
 * Gemini API integration
 * AI-generated responses
 * Environment-variable based API key management
@@ -20,10 +23,12 @@ This project takes user input from a Streamlit interface and sends it to Google'
 ## Technologies Used
 
 * **Python**
-* **Streamlit** — frontend/web interface
-* **Google Gemini API** — LLM
-* **google-genai** — Gemini's current Python SDK
+* **Streamlit** — web interface
+* **Google Gemini API** — Generative AI and multimodal capabilities
+* **Gemini 3.5 Flash-Lite** — Gemini model used for generating responses
+* **google-generativeai** — Gemini Python SDK used in the project
 * **python-dotenv** — loading environment variables
+* **Pillow (PIL)** — image processing
 * **Git & GitHub** — version control
 
 ---
@@ -33,27 +38,28 @@ This project takes user input from a Streamlit interface and sends it to Google'
 ```text
 GEMINILLMAPP/
 │
-├── app.py
-├── .env
+├── app.py              # Streamlit application
+├── vision.py           # Gemini Vision/API logic
+├── .env                # API key (not uploaded)
 ├── .gitignore
 ├── README.md
-└── venv/
+└── venv/               # Python virtual environment
 ```
 
-> `venv/` and `.env` should **not** be uploaded to GitHub.
+> `.env` and `venv/` should **not** be uploaded to GitHub.
 
 ---
 
 ## Setup
 
-### 1. Clone the repository
+### 1. Clone the Repository
 
 ```bash
-git clone YOUR_GITHUB_REPOSITORY_URL
-cd GEMINILLMAPP
+git clone https://github.com/samareshdalal/gemini-llm-app.git
+cd gemini-llm-app
 ```
 
-### 2. Create a virtual environment
+### 2. Create a Virtual Environment
 
 ```bash
 python -m venv venv
@@ -67,10 +73,10 @@ venv\Scripts\activate
 
 ---
 
-### 3. Install dependencies
+### 3. Install Dependencies
 
 ```powershell
-pip install streamlit google-genai python-dotenv
+pip install streamlit google-generativeai python-dotenv pillow
 ```
 
 ---
@@ -79,11 +85,13 @@ pip install streamlit google-genai python-dotenv
 
 Create a Gemini API key through **Google AI Studio**.
 
-Store the key in a `.env` file:
+Create a `.env` file in the project directory:
 
 ```text
-GEMINI_API_KEY=your_api_key_here
+GOOGLE_API_KEY=your_api_key_here
 ```
+
+The application loads the API key using `python-dotenv`.
 
 ### Security
 
@@ -97,100 +105,115 @@ venv/
 __pycache__/
 ```
 
-If an API key is accidentally pushed to GitHub, revoke it and create a new one.
+If an API key is accidentally exposed publicly, revoke it and create a new one.
 
 ---
 
-## 💻 Application Code
+## How the Application Works
 
-The application uses the Gemini client to communicate with Google's Gemini API.
-
-A simplified version looks like:
-
-```python
-import os
-from dotenv import load_dotenv
-from google import genai
-import streamlit as st
-
-load_dotenv()
-
-client = genai.Client(
-    api_key=os.getenv("GEMINI_API_KEY")
-)
-
-st.title("Gemini LLM App")
-
-input_text = st.text_input("Enter your question")
-
-if input_text:
-    response = client.models.generate_content(
-        model="gemini-2.5-flash",
-        contents=input_text
-    )
-
-    st.write(response.text)
-```
-
----
-
-## Running the Application
-
-After activating the virtual environment:
-
-```powershell
-streamlit run app.py
-```
-
-Streamlit will start a local server and provide a URL, usually:
-
-```text
-http://localhost:8501
-```
-
-Open that URL in your browser.
-
----
-
-## How It Works
-
-The application follows this basic flow:
+The application follows this flow:
 
 ```text
 User
   ↓
 Streamlit UI
   ↓
-Python application
+app.py
+  ↓
+vision.py
   ↓
 Gemini API
   ↓
-Gemini Model
+Gemini 3.5 Flash-Lite
   ↓
 AI Response
   ↓
 Streamlit UI
 ```
 
-### Step 1 — User enters a question
+### Step 1 — User uploads an image
 
-The user enters text into the Streamlit interface.
+The user uploads a JPG, JPEG, or PNG image through the Streamlit interface.
 
-### Step 2 — Python receives the input
+### Step 2 — User enters a question
 
-The application stores the user's input in a Python variable.
+The user enters a question about the uploaded image.
 
-### Step 3 — Request is sent to Gemini
+For example:
 
-The application sends the input to the Gemini model through the Gemini API.
+```text
+"What objects are present in this image?"
+```
 
-### Step 4 — Gemini generates a response
+### Step 3 — `app.py` handles the interface
 
-Gemini processes the prompt and returns generated text.
+`app.py` is responsible for the Streamlit interface, including:
 
-### Step 5 — Streamlit displays the response
+* Page configuration
+* Text input
+* Image upload
+* Submit button
+* Displaying the AI response
 
-The response is displayed directly on the web page.
+### Step 4 — `vision.py` handles Gemini
+
+`vision.py` contains the Gemini-related logic.
+
+It receives the user's question and uploaded image and sends them to the Gemini API.
+
+### Step 5 — Gemini processes the input
+
+The model receives both the image and text prompt:
+
+```text
+Image + Question
+       ↓
+Gemini 3.5 Flash-Lite
+```
+
+The model analyzes the visual information and generates a text response.
+
+### Step 6 — Response is displayed
+
+The generated response is returned to the Streamlit application and displayed to the user.
+
+---
+
+## Example Questions
+
+The application can be used for questions such as:
+
+* "What is in this image?"
+* "Describe this image."
+* "What objects can you identify?"
+* "What is happening in this image?"
+* "Explain this diagram."
+* "Read the text in this image."
+* "What can you tell me about this picture?"
+
+---
+
+## Running the Application
+
+Activate the virtual environment:
+
+```powershell
+venv\Scripts\activate
+```
+
+Then run:
+
+```powershell
+streamlit run app.py
+```
+
+Streamlit will start a local server, usually at:
+
+```text
+http://localhost:8501
+```
+
+Open the URL in your browser.
 
 ---
 
@@ -208,20 +231,36 @@ google.api_core.exceptions.InvalidArgument:
 check:
 
 1. The API key is correct.
-2. The key hasn't been revoked.
+2. The API key has not been revoked.
 3. `.env` contains the correct variable name:
 
 ```text
-GEMINI_API_KEY=your_key
+GOOGLE_API_KEY=your_key
 ```
 
 4. `load_dotenv()` is being called.
-5. The application is running from the correct project directory.
-6. You haven't accidentally added spaces or quotation marks around the key.
+5. The `.env` file is in the project directory.
+6. The API key has not accidentally been uploaded to GitHub.
 
 ---
 
-### Streamlit command not found
+### `404 Model Not Found`
+
+If you see:
+
+```text
+404 models/gemini-vision-pro is not found
+```
+
+the model name being used is no longer available or supported by the API version being used.
+
+This project uses **Gemini 3.5 Flash-Lite** for image and text generation.
+
+This was also an important lesson while developing the project: older Generative AI tutorials may use model names that are no longer available, so model names and API documentation need to be checked when building or updating an application.
+
+---
+
+### Streamlit Command Not Found
 
 Make sure the virtual environment is activated:
 
@@ -235,9 +274,15 @@ Then install Streamlit:
 pip install streamlit
 ```
 
+You can also run:
+
+```powershell
+python -m streamlit run app.py
+```
+
 ---
 
-### Python/virtual environment problems
+### Python / Virtual Environment Problems
 
 Check Python:
 
@@ -245,33 +290,27 @@ Check Python:
 python --version
 ```
 
-Check the active environment:
+Check which Python is being used:
 
 ```powershell
 where python
 ```
 
-The Python path should point toward your project's `venv`.
+The returned path should point toward the project's `venv`.
 
 ---
 
-## Legacy SDK vs Current SDK
+## Legacy SDK and Model Changes
 
-An earlier version of this project may use:
+The project was developed while following a Gemini API tutorial that used an older Gemini Vision model.
 
-```python
-import google.generativeai as genai
-```
+During development, the older model produced a `404 Model Not Found` error.
 
-This is the older Gemini Python SDK.
+The project was then updated to use **Gemini 3.5 Flash-Lite**.
 
-The current SDK uses:
+This provided practical experience with an important aspect of Generative AI development: **APIs, SDKs, and model availability can change over time.**
 
-```python
-from google import genai
-```
-
-For new projects, the current `google-genai` SDK is preferred.
+As a result, older tutorials may require modifications before they work with newer Gemini APIs and models.
 
 ---
 
@@ -279,58 +318,72 @@ For new projects, the current `google-genai` SDK is preferred.
 
 This project helped me understand:
 
-* How APIs work
-* How an LLM can be integrated into a Python application
-* How to send prompts to Gemini
-* How to receive and display model responses
+* How to build a basic **Generative AI application**
+* How **LLMs can be accessed through APIs**
+* How to connect Python applications to the Gemini API
+* How **multimodal AI** works with text and images
+* How to send an image and prompt to an AI model
 * How Streamlit can be used to create a simple frontend
-* How environment variables protect API keys
+* How image uploads work in Streamlit
+* How Pillow can be used to process images
+* How environment variables can be used to protect API keys
 * How Python virtual environments work
+* How to install dependencies using `pip`
 * How to debug API authentication errors
-* How a frontend communicates with an AI backend/API
+* How to debug model availability errors
+* Why older AI tutorials can stop working
+* How `app.py` and `vision.py` can separate UI and AI logic
+* The basic architecture of a Generative AI application
 
 ---
 
-## 🔮 Future Improvements
+## Future Improvements
 
 Possible improvements include:
 
 * Chat history
 * Conversation memory
 * Better UI
-* Multiple Gemini models
+* Image preview
+* Multiple image uploads
+* PDF support
 * Streaming responses
-* File/PDF upload
-* Prompt templates
+* Better prompt handling
 * System instructions
 * RAG
 * Authentication
 * Deployment
-* Connecting the application to a database
+* Database integration
+* Exploring additional Gemini models
+* Adding more multimodal capabilities
 
 ---
 
 ## Project Goal
 
-The main goal of this project is to understand the fundamentals of building a **Generative AI application from scratch** rather than simply using an existing chatbot.
+The main goal of this project is to understand the fundamentals of building a **Generative AI application** rather than simply using an existing AI chatbot.
 
-It demonstrates the basic architecture behind many modern AI applications:
+The project demonstrates how different components work together:
 
 ```text
 Frontend
    ↓
-Python Application
+Streamlit
    ↓
-API
+Python
    ↓
-LLM
+Gemini API
+   ↓
+Gemini 3.5 Flash-Lite
    ↓
 Generated Response
 ```
 
+Although this is a small project, it provided practical experience with **APIs, LLMs, multimodal inputs, Streamlit, environment variables, Python virtual environments, and debugging real-world API issues.**
+
 ---
 
-## 👨‍💻 Author
+## Author
 
 **Samaresh**
 
