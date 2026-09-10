@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Gemini Craft</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Pixel-style font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- Background -->
+    <div class="sky"></div>
+
+    <div class="stars">
+        <span>✦</span>
+        <span>✧</span>
+        <span>✦</span>
+        <span>✧</span>
+        <span>✦</span>
+    </div>
+
+    <!-- Main game UI -->
+    <main class="game">
+
+        <!-- TOP BAR -->
+        <header class="topbar">
+
+            <div class="logo">
+                <div class="pickaxe">⛏</div>
+
+                <div>
+                    <h1>GEMINI CRAFT</h1>
+                    <p>AI WORLD</p>
+                </div>
+            </div>
+
+            <div class="player-info">
+
+                <div class="level">
+                    <span>LVL</span>
+                    <strong>01</strong>
+                </div>
+
+                <div class="xp">
+                    <div class="xp-label">
+                        <span>XP</span>
+                        <span>0 / 100</span>
+                    </div>
+
+                    <div class="xp-bar">
+                        <div class="xp-fill"></div>
+                    </div>
+                </div>
+
+                <div class="sun">☀</div>
+
+            </div>
+
+        </header>
+
+
+        <!-- WORLD -->
+        <section class="world">
+
+            <!-- Clouds -->
+            <div class="cloud cloud-1"></div>
+            <div class="cloud cloud-2"></div>
+
+            <!-- Moon -->
+            <div class="moon"></div>
+
+            <!-- Floating particles -->
+            <div class="particle p1">✦</div>
+            <div class="particle p2">✧</div>
+            <div class="particle p3">✦</div>
+
+            <!-- Landscape -->
+            <div class="mountains"></div>
+
+            <div class="trees">
+
+                <div class="tree tree-1">
+                    <div class="leaves"></div>
+                    <div class="trunk"></div>
+                </div>
+
+                <div class="tree tree-2">
+                    <div class="leaves"></div>
+                    <div class="trunk"></div>
+                </div>
+
+                <div class="tree tree-3">
+                    <div class="leaves"></div>
+                    <div class="trunk"></div>
+                </div>
+
+            </div>
+
+            <div class="ground">
+                <div class="grass"></div>
+            </div>
+
+
+            <!-- AI character -->
+            <div class="character">
+
+                <div class="character-shadow"></div>
+
+                <div class="bot">
+
+                    <div class="bot-head">
+
+                        <div class="bot-eye left"></div>
+                        <div class="bot-eye right"></div>
+
+                        <div class="bot-mouth"></div>
+
+                    </div>
+
+                    <div class="bot-body">
+
+                        <div class="bot-screen">
+                            AI
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Speech bubble -->
+            <div class="speech">
+
+                <div class="speech-name">
+                    GEMINI
+                </div>
+
+                <div class="speech-text">
+                    <span id="welcomeText">
+                        Welcome, traveler.
+                    </span>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- CONTROL PANEL -->
+        <section class="control-panel">
+
+            <!-- Mode selector -->
+            <div class="mode-tabs">
+
+                <button class="mode active" data-mode="chat">
+                    <span>🧠</span>
+                    CHAT
+                </button>
+
+                <button class="mode" data-mode="vision">
+                    <span>👁</span>
+                    VISION
+                </button>
+
+                <button class="mode" data-mode="history">
+                    <span>📜</span>
+                    HISTORY
+                </button>
+
+            </div>
+
+
+            <!-- CHAT -->
+            <div class="panel-content chat-panel">
+
+                <div class="input-label">
+                    WHAT DO YOU WANT TO ASK?
+                </div>
+
+                <div class="input-container">
+
+                    <textarea
+                        id="question"
+                        placeholder="Type your question..."
+                        rows="3"
+                    ></textarea>
+
+                    <button id="askButton" class="send-button">
+                        <span>➤</span>
+                    </button>
+
+                </div>
+
+                <div class="hint">
+                    PRESS ENTER TO SUMMON GEMINI
+                </div>
+
+            </div>
+
+
+            <!-- VISION -->
+            <div class="panel-content vision-panel hidden">
+
+                <div class="input-label">
+                    GIVE GEMINI SOMETHING TO SEE
+                </div>
+
+                <label class="upload-box">
+
+                    <input
+                        type="file"
+                        id="imageInput"
+                        accept="image/png,image/jpeg,image/jpg"
+                    >
+
+                    <div class="upload-icon">
+                        🖼
+                    </div>
+
+                    <div>
+                        <strong>DROP AN IMAGE HERE</strong>
+                        <small>PNG / JPG</small>
+                    </div>
+
+                </label>
+
+                <textarea
+                    id="visionQuestion"
+                    placeholder="What should Gemini look for?"
+                    rows="2"
+                ></textarea>
+
+                <button class="vision-button" id="visionButton">
+                    🔍 ANALYZE IMAGE
+                </button>
+
+            </div>
+
+
+            <!-- HISTORY -->
+            <div class="panel-content history-panel hidden">
+
+                <div class="input-label">
+                    ADVENTURE LOG
+                </div>
+
+                <div id="historyList" class="history-list">
+
+                    <div class="empty-history">
+                        No adventures yet...
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- RESPONSE -->
+            <div class="response-box">
+
+                <div class="response-header">
+
+                    <span>
+                        💬 GEMINI RESPONSE
+                    </span>
+
+                    <span id="status">
+                        ● READY
+                    </span>
+
+                </div>
+
+                <div id="response" class="response-content">
+
+                    <span class="cursor">▮</span>
+                    <span>Ask something to begin your adventure...</span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- FOOTER -->
+        <footer>
+
+            <span>⚔ GEMINI CRAFT</span>
+
+            <span>POWERED BY GEMINI</span>
+
+            <span>WORLD 01</span>
+
+        </footer>
+
+    </main>
+
+
+    <script src="script.js"></script>
+
+</body>
+</html>

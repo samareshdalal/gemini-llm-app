@@ -1,31 +1,98 @@
 from dotenv import load_dotenv
-load_dotenv()  # Load environment variables from .env file
-import streamlit as st
+load_dotenv()
+
 import os
 import google.generativeai as genai
 
-genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 
-## function to load gemini pro model and get responses
 
-model=genai.GenerativeModel('gemini-3.6-flash')
+# ============================================
+# GEMINI SETUP
+# ============================================
+
+genai.configure(
+    api_key=os.getenv("GOOGLE_API_KEY")
+)
+
+model = genai.GenerativeModel(
+    "gemini-3.6-flash"
+)
+
+
+# ============================================
+# FLASK APP
+# ============================================
+
+app = Flask(__name__)
+
+CORS(app)
+
+
+# ============================================
+# GEMINI FUNCTION
+# ============================================
 
 def get_gemini_response(question):
-    response=model.generate_content(question)
+
+    response = model.generate_content(question)
+
     return response.text
 
-## initialize streamlit app
 
-st.set_page_config(page_title="Q&A Demo")
+# ============================================
+# CHAT API
+# ============================================
 
-st.header("Gemini LLM Application")
+@app.route("/ask", methods=["POST"])
+def ask():
 
-input_text = st.text_area("Enter your question here:")
-submit = st.button("Ask the question here")
+    try:
 
-## when submit is clicked
+        data = request.get_json()
 
-if submit:
-    response=get_gemini_response(input_text)
-    st.subheader("The Response is")
-    st.write(response)
+        question = data.get("question", "").strip()
+
+        if not question:
+
+            return jsonify({
+                "error": "Please enter a question."
+            }), 400
+
+
+        answer = get_gemini_response(question)
+
+
+        return jsonify({
+            "response": answer
+        })
+
+
+    except Exception as e:
+
+        print("ERROR:", e)
+
+        return jsonify({
+            "error": str(e)
+        }), 500
+
+
+# ============================================
+# START SERVER
+# ============================================
+
+if __name__ == "__main__":
+
+    print("===================================")
+    print("      GEMINI CRAFT SERVER")
+    print("===================================")
+    print("Server running at:")
+    print("http://127.0.0.1:5000")
+    print("===================================")
+
+    app.run(
+        host="127.0.0.1",
+        port=5000,
+        debug=True
+    )
